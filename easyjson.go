@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"io"
 )
 
 type easyJsonObj struct {
@@ -13,11 +14,14 @@ type easyJsonObj struct {
 
 type Keys []interface{}
 
-// NewEasyJsonObj
+// startFunction
 func NewEasyJson(i interface{}) easyJsonObj {
 
 	var jo easyJsonObj
-	if str, ok := i.(string); ok {
+	if r,ok:=i.(io.Reader); ok {
+		dec := json.NewDecoder(r)
+		dec.Decode(&jo.v)
+	} else if str, ok := i.(string); ok {
 		dec := json.NewDecoder(strings.NewReader(str))
 		dec.Decode(&jo.v)
 	} else {
@@ -27,54 +31,43 @@ func NewEasyJson(i interface{}) easyJsonObj {
 	return jo
 }
 
-// K
+// access func
 func (e easyJsonObj) K(keys ...interface{}) (ejo easyJsonObj) {
 
-//	fmt.Printf(			"###start K(keys = [%#v])\n", keys)
-//	defer fmt.Printf(	"###end K(keys = [%#v])\n", keys)
 	ejo = e
 	for _,key:=range keys {
-//		fmt.Printf("key==<%#v>\n",key)
 		switch key.(type) {
 		case int:
 			//array access
 			array, ok := ejo.v.([]interface{})
 			if !ok {
-//				fmt.Printf("#try acs array index= %d but err(%#v)\n",key.(int),ejo.v)
-				ejo.err=fmt.Errorf("value is not array please don't use int key.")
+				ejo.err=fmt.Errorf("not array please don't use int key.")
 				return
 			}
 
 			v:=array[key.(int)]
 			if v ==nil {
-				errstr:=fmt.Sprintf("array access but value= nil key=%v array=%v\n",key,array)
-//				fmt.Print(errstr)
-				ejo.err=fmt.Errorf(errstr)
+				errStr:=fmt.Sprintf("array access value= nil key=%v array=%v\n",key,array)
+				ejo.err=fmt.Errorf(errStr)
 				return
 			}
 			ejo.v =v
 		case string:
 			dict, ok := ejo.v.(map[string]interface{})
 			if !ok {
-//				fmt.Printf("#try acs dict key= %d but err(%#v)\n",key.(string),ejo.v)
-				ejo.err=fmt.Errorf("error v is not dictionary please don't use string key.")
+				ejo.err=fmt.Errorf("not dictionary please don't use string key.")
 				return 
 			}
 
 			v:= dict[key.(string)]
 			if v ==nil {
-				errstr:=fmt.Sprintf("dict access but value= nil key=%v dict=%v\n",key,dict)
-//				fmt.Print(errstr)
+				errstr:=fmt.Sprintf("dict access value= nil key=%v dict=%v\n",key,dict)
 				ejo.err=fmt.Errorf(errstr)
 				return
 			}
-
-//			fmt.Printf("before dict change:  %v\n",ejo.v)
 			ejo.v = v
-//			fmt.Printf("after dict change:  %v\n",ejo.v)
-
 		default:
-			ejo.err=fmt.Errorf("error key can use int or strings only sory..")
+			ejo.err=fmt.Errorf("key is only use string,int")
 			return
 		}
 	}
