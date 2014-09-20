@@ -31,43 +31,43 @@ func NewEasyJson(i interface{}) easyJsonObj {
 	return jo
 }
 
-// access func
-func (e easyJsonObj) K(keys ...interface{}) (ejo easyJsonObj) {
+// access function
+func (e easyJsonObj) K(keys ...interface{}) (ret easyJsonObj) {
 
-	ejo = e
+	ret = e
 	for _,key:=range keys {
 		switch key.(type) {
 		case int:
 			//array access
-			array, ok := ejo.v.([]interface{})
+			array, ok := ret.v.([]interface{})
 			if !ok {
-				ejo.err=fmt.Errorf("not array please don't use int key.")
+				ret.err=fmt.Errorf("not array please don't use int key.")
 				return
 			}
 
 			v:=array[key.(int)]
 			if v ==nil {
 				errStr:=fmt.Sprintf("array access value= nil key=%v array=%v\n",key,array)
-				ejo.err=fmt.Errorf(errStr)
+				ret.err=fmt.Errorf(errStr)
 				return
 			}
-			ejo.v =v
+			ret.v =v
 		case string:
-			dict, ok := ejo.v.(map[string]interface{})
+			dict, ok := ret.v.(map[string]interface{})
 			if !ok {
-				ejo.err=fmt.Errorf("not dictionary please don't use string key.")
-				return 
+				ret.err=fmt.Errorf("not dictionary please don't use string key.")
+				return
 			}
 
 			v:= dict[key.(string)]
 			if v ==nil {
 				errstr:=fmt.Sprintf("dict access value= nil key=%v dict=%v\n",key,dict)
-				ejo.err=fmt.Errorf(errstr)
+				ret.err=fmt.Errorf(errstr)
 				return
 			}
-			ejo.v = v
+			ret.v = v
 		default:
-			ejo.err=fmt.Errorf("key is only use string,int")
+			ret.err=fmt.Errorf("key is only use string,int")
 			return
 		}
 	}
