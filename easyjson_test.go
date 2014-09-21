@@ -35,7 +35,6 @@ func TestK00(t *testing.T) {
 		t.Fatal("json convert err")
 	}
 
-	jso.Debug = true
 	if v, _ := jso.K("key2").K(1).AsInt(); v != 2 {
 		t.Fatal("convert int err")
 	}
@@ -241,7 +240,6 @@ func TestAsBool(t *testing.T) {
 		t.Fatal("json convert err")
 	}
 
-	jso.Debug = true
 	v, err := jso.K("key2", 4).AsBool()
 	if err != nil {
 		t.Fatalf("err:%s", err)
@@ -253,19 +251,14 @@ func TestAsBool(t *testing.T) {
 }
 
 func TestIsXXX(t *testing.T) {
-	const jsonString string = `{
-	"key1":"value",
-	"key2":["a",2,3,4,5],
-	"key3":{"a":1,"b":2,"c":[0,1,2,3,4,5],"d":10,"e":6},
-	"key4":true,
-	}`
+	const jsonString string = `{"key1":"value","key2":["a",2,3,4,5],"key3":{"a":1,"b":2,"c":[0,1,2,3,4,5],"d":10,"e":6},"key4":true}`
 
 	testobj, err := NewEasyJson(jsonString)
 	if err != nil {
 		t.Fatal("json convert err")
 	}
 
-	testobj.Debug = true
+	//	testobj.Debug = true
 
 	checkList := map[string]Keys{
 		"string": Keys{"key1"},

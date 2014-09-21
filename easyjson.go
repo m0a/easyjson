@@ -174,7 +174,6 @@ func (e easyJsonObj) AsBool(k ...interface{}) (b bool, err error) {
 
 // Value check
 func (e easyJsonObj) IsDict(k ...interface{}) bool {
-	fmt.Fprintf(os.Stderr, "IsDict e:%v\n", e)
 	_, ok := e.K(k...).v.(map[string]interface{})
 	return ok
 }
