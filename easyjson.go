@@ -16,6 +16,20 @@ type easyJsonObj struct {
 	Debug bool
 }
 
+type JsonAccessor interface {
+	K(...interface{}) JsonAccessor
+	AsInt(...interface{}) (i int, err error)
+	AsFloat64(...interface{}) (v float64, err error)
+	AsString(...interface{}) (str string, err error)
+	AsBool(...interface{}) (b bool, err error)
+	IsDict(...interface{}) bool
+	IsArray(...interface{}) bool
+	IsBool(...interface{}) bool
+	IsNumber(...interface{}) bool
+	IsString(...interface{}) bool
+}
+
+
 type Keys []interface{}
 
 // parameter i io.reader,string,GoObject(interface{}) support
@@ -42,7 +56,7 @@ func newEasyJson(r io.Reader) (jo easyJsonObj, err error) {
 }
 
 // parameter keys can use string or int
-func (e easyJsonObj) K(keys ...interface{}) (ret easyJsonObj) {
+func (e easyJsonObj) K(keys ...interface{}) (JsonAccessor) {
 
 	errorLog := func(format string, a ...interface{}) {
 		e.err = fmt.Errorf(format, a...)
@@ -69,21 +83,21 @@ func (e easyJsonObj) K(keys ...interface{}) (ret easyJsonObj) {
 
 	if e.v == nil {
 		errorLog("already value is null......\n")
-		return
+		panic(e.err)
 	}
 
 	debugLog(">>current obj=%v\n", e)
 	defer debugLog(">>end K(%v)\n", keys)
 
-	ret = e
+	retEjo:= e
 	for _, key := range keys {
 		debugLog("-->key=<<%s>>\n", key)
-		debugLog("-->ret=<<%s>>\n", ret)
+		debugLog("-->ret=<<%s>>\n", retEjo)
 
 		switch key.(type) {
 		case int:
 			//array access
-			array, ok := ret.v.([]interface{})
+			array, ok := retEjo.v.([]interface{})
 			if !ok {
 				errorLog("invalid key:%v Not array. please use string key.\n", key)
 				panic(e.err)
@@ -94,9 +108,10 @@ func (e easyJsonObj) K(keys ...interface{}) (ret easyJsonObj) {
 				errorLog("invalid key:%v value is nil.\n", key)
 				panic(e.err)
 			}
-			ret.v = v
+			retEjo.v = v
+
 		case string:
-			dict, ok := ret.v.(map[string]interface{})
+			dict, ok := retEjo.v.(map[string]interface{})
 			if !ok {
 				errorLog("invalid key:%v Not dictionary. please use int key.\n", key)
 				panic(e.err)
@@ -110,15 +125,16 @@ func (e easyJsonObj) K(keys ...interface{}) (ret easyJsonObj) {
 
 			if v == nil {
 				errorLog("dict access value= nil key=%v dict=%v\n", key, dict)
-				return
+				panic(e.err)
 			}
-			ret.v = v
+			retEjo.v = v
+
 		default:
 			errorLog("key shoud use string or int current type:%T", key)
-			return
+			panic(e.err)
 		}
 	}
-	return
+	return retEjo
 }
 
 func panicf(format string, a ...interface{}) {
@@ -134,7 +150,7 @@ func (e easyJsonObj) AsInt(k ...interface{}) (i int, err error) {
 }
 
 func (e easyJsonObj) AsFloat64(k ...interface{}) (v float64, err error) {
-	ejo := e.K(k...)
+	ejo := e.K(k...).(easyJsonObj)
 	if ejo.err != nil {
 		err = ejo.err
 		return
@@ -149,7 +165,7 @@ func (e easyJsonObj) AsFloat64(k ...interface{}) (v float64, err error) {
 }
 
 func (e easyJsonObj) AsString(k ...interface{}) (str string, err error) {
-	ejo := e.K(k...)
+	ejo := e.K(k...).(easyJsonObj)
 	if ejo.err != nil {
 		err = ejo.err
 		return
@@ -165,7 +181,7 @@ func (e easyJsonObj) AsString(k ...interface{}) (str string, err error) {
 }
 
 func (e easyJsonObj) AsBool(k ...interface{}) (b bool, err error) {
-	ejo := e.K(k...)
+	ejo := e.K(k...).(easyJsonObj)
 	if ejo.err != nil {
 		err = ejo.err
 		return
@@ -182,27 +198,27 @@ func (e easyJsonObj) AsBool(k ...interface{}) (b bool, err error) {
 
 // Value check
 func (e easyJsonObj) IsDict(k ...interface{}) bool {
-	_, ok := e.K(k...).v.(map[string]interface{})
+	_, ok := e.K(k...).(easyJsonObj).v.(map[string]interface{})
 	return ok
 }
 
 func (e easyJsonObj) IsArray(k ...interface{}) bool {
 
-	_, ok := e.K(k...).v.([]interface{})
+	_, ok := e.K(k...).(easyJsonObj).v.([]interface{})
 	return ok
 }
 
 func (e easyJsonObj) IsBool(k ...interface{}) bool {
-	_, ok := e.K(k...).v.(bool)
+	_, ok := e.K(k...).(easyJsonObj).v.(bool)
 	return ok
 }
 
 func (e easyJsonObj) IsNumber(k ...interface{}) bool {
-	_, ok := e.K(k...).v.(float64)
+	_, ok := e.K(k...).(easyJsonObj).v.(float64)
 	return ok
 }
 
 func (e easyJsonObj) IsString(k ...interface{}) bool {
-	_, ok := e.K(k...).v.(string)
+	_, ok := e.K(k...).(easyJsonObj).v.(string)
 	return ok
 }

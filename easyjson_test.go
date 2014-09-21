@@ -51,7 +51,7 @@ func TestK01(t *testing.T) {
 		t.Fatal("json convert err")
 	}
 
-	jso = jso.K("key2", 0)
+	jso = jso.K("key2", 0).(easyJsonObj)
 	if jso.v != "a" {
 		t.Fatalf("value:%v correct:'a'\n", jso.v)
 	}
@@ -272,23 +272,23 @@ func TestIsXXX(t *testing.T) {
 		switch v {
 		case "string":
 			if !testobj.IsString(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...))
 			}
 		case "array":
 			if !testobj.IsArray(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...))
 			}
 		case "number":
 			if !testobj.IsNumber(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...))
 			}
 		case "dict":
 			if !testobj.IsDict(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...))
 			}
 		case "bool":
 			if !testobj.IsBool(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...))
 			}
 		}
 	}
