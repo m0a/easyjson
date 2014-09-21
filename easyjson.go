@@ -27,7 +27,7 @@ type JsonAccessor interface {
 	IsBool(...interface{}) bool
 	IsNumber(...interface{}) bool
 	IsString(...interface{}) bool
-	Walk(walker func(key interface{},value JsonAccessor)(bool))
+	Walk(walker func(key interface{},value JsonAccessor))
 }
 
 

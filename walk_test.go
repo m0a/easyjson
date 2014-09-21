@@ -3,6 +3,7 @@ package easyjson_test
 import (
 	"testing"
 	"github.com/m0a/easyjson"
+	"fmt"
 )
 
 
@@ -35,6 +36,26 @@ func TestRangeObjects(t *testing.T) {
 
 		}
 	}
+}
 
 
+func TestWalk(t *testing.T) {
+	jsonStr :=
+	`[
+		"0",
+		"1",
+		"2",
+		{"3":[1,2,3,4,5,6,7]},
+		null,
+		"5",
+		"6"
+	]`
+	obj, err := easyjson.NewEasyJson(jsonStr)
+	if err != nil {
+		t.Fatal("json convert err")
+	}
+
+	obj.Walk(func(key interface{},value easyjson.JsonAccessor){
+		fmt.Printf("%v:%v\n",key,value)
+	})
 }

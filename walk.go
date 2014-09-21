@@ -1,10 +1,11 @@
 package easyjson
 
 
-// object walker
-func (e easyJsonObj)Walk(walker func(key interface{},value JsonAccessor)(bool)){
-
-//	walker()
+// parameter walker is function(key interface{},value JsonAccessor)
+func (e easyJsonObj)Walk(walker func(key interface{},value JsonAccessor)){
+	for k,v:=range e.RangeObjects(){
+		go walker(k,v)
+	}
 }
 
 // example: for k,v:= range XXX.RangeObjects() {
