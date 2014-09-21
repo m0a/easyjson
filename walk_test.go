@@ -39,7 +39,7 @@ func TestRangeObjects(t *testing.T) {
 }
 
 
-func TestWalk(t *testing.T) {
+func TestListWalk(t *testing.T) {
 	jsonStr :=
 	`[
 		"0",
@@ -57,5 +57,35 @@ func TestWalk(t *testing.T) {
 
 	obj.Walk(func(key interface{},value easyjson.JsonAccessor){
 		fmt.Printf("%v:%v\n",key,value)
+		str,_:=value.AsString()
+		if key == 0 && str!="0" {
+			t.Fatal("key 0 value !=0")
+		}
 	})
 }
+
+func TestDictionaryWalk(t *testing.T) {
+	jsonStr :=
+	`{
+		"0":"a",
+		"1":"b",
+		"2":"c",
+		"3":{"3":[1,2,3,4,5,6,7]},
+		"a":"d",
+		"5":"e",
+		"6":"f"
+	}`
+	obj, err := easyjson.NewEasyJson(jsonStr)
+	if err != nil {
+		t.Fatal("json convert err")
+	}
+
+	obj.Walk(func(key interface{},value easyjson.JsonAccessor){
+		fmt.Printf("%v:%v\n",key,value)
+		str,_:=value.AsString()
+		if key == "0" && str!="a" {
+			t.Fatal("key \"0\" value !=\"a\"")
+		}
+	})
+}
+

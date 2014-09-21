@@ -22,12 +22,18 @@ type JsonAccessor interface {
 	AsFloat64(...interface{}) (v float64, err error)
 	AsString(...interface{}) (str string, err error)
 	AsBool(...interface{}) (b bool, err error)
+
 	IsDict(...interface{}) bool
 	IsArray(...interface{}) bool
 	IsBool(...interface{}) bool
 	IsNumber(...interface{}) bool
 	IsString(...interface{}) bool
+
+	PretyString() string
+	PretyPrint()
+
 	Walk(walker func(key interface{},value JsonAccessor))
+	RangeObjects()(ret map[interface {}]JsonAccessor)
 }
 
 
@@ -82,8 +88,8 @@ func (e easyJsonObj) K(keys ...interface{}) (JsonAccessor) {
 	}
 	debugLog(">>start K(%v)\n", keys)
 
-	if e.v == nil {
-		errorLog("already value is null......\n")
+	if e.v == nil && len(keys)!=0 {
+		errorLog("already value is null\n")
 		panic(e.err)
 	}
 
