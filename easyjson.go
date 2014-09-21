@@ -2,10 +2,10 @@ package easyjson
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
-	"errors"
 )
 
 type easyJsonObj struct {
@@ -40,12 +40,12 @@ func (e easyJsonObj) K(keys ...interface{}) (ret easyJsonObj) {
 		e.err = fmt.Errorf(format, a...)
 	}
 	debuglog := func(format string, a ...interface{}) {
-		_=format
-		_=a
+		_ = format
+		_ = a
 	}
 	if e.Debug {
 		errorlog = func(format string, a ...interface{}) {
-			str:=fmt.Sprintf(format,a...)
+			str := fmt.Sprintf(format, a...)
 			e.err = errors.New(str)
 			fmt.Print(str)
 			panic(str)
