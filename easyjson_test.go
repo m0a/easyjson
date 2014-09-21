@@ -14,8 +14,9 @@ func TestNewEasyJson(t *testing.T) {
 	"key2":["a",2,3,4,5]
 	}`
 
-	jso := NewEasyJson(jsonString)
-	if jso.v == nil {
+	testobj := NewEasyJson(jsonString)
+	testobj.Debug=true
+	if testobj.v == nil {
 		t.Fatal("NewEasyJson Error")
 	}
 
@@ -28,9 +29,11 @@ func TestK00(t *testing.T) {
 	}`
 
 	jso := NewEasyJson(jsonString)
+	jso.Debug=true
 	if v, _ := jso.K("key2").K(1).AsInt(); v != 2 {
 		t.Fatal("convert int err")
 	}
+
 }
 
 func TestK01(t *testing.T) {
@@ -68,6 +71,22 @@ func TestK03(t *testing.T) {
 
 	jso := NewEasyJson(jsonString)
 	keys := Keys{"key3", "c", 4}
+	num, err := jso.K(keys...).AsInt()
+	if err != nil || num != 4 {
+		t.Fatalf("num=%v err:%s correct:4\n", num, err, jso.err)
+	}
+}
+
+func TestK04(t *testing.T) {
+
+	const jsonString string = `[
+		"value",
+		["a",2,3,4,5],
+		{"a":1,"b":2,"c":[0,1,2,3,4,5]}
+	]`
+
+	jso := NewEasyJson(jsonString)
+	keys := Keys{2, "c", 4}
 	num, err := jso.K(keys...).AsInt()
 	if err != nil || num != 4 {
 		t.Fatalf("num=%v err:%s correct:4\n", num, err, jso.err)
@@ -165,41 +184,47 @@ func TestUseAsFloat64(t *testing.T) {
 	}
 }
 
-const jsonString4 string = `{
+func TestIsXXX(t *testing.T) {
+	const jsonString string = `{
 	"key1":"value",
 	"key2":["a",2,3,4,5],
-	"key3":{"a":1,"b":2,
-		"c":[0,1,2,3,4,5]}
+	"key3":{"a":1,"b":2,"c":[0,1,2,3,4,5],"d":10,"e":6},
+	"key4":true,
 	}`
 
-func TestIsXXX(t *testing.T) {
-	jso := NewEasyJson(jsonString4)
+
+	jso := NewEasyJson(jsonString)
 
 	checkList := map[string]Keys{
-		"string": Keys{"key1"},
-		"dict":   Keys{"key3"},
-		"array":  Keys{"key3", "c"},
-		"number": Keys{"key3", "c", 3},
+		"string"	: Keys{"key1"},
+		"dict"		: Keys{"key3"},
+		"array"		: Keys{"key3", "c"},
+		"number"	: Keys{"key3", "c", 3},
+		"bool"		: Keys{"key4"},
+
 	}
 
 	for v, k := range checkList {
 		switch v {
 		case "string":
 			if !jso.IsString(k...) {
-				t.Fatalf("key:%v value is not %s(%#v)\n", jso.v, v, jso.K(k...))
+				t.Fatalf("key:%v value is not %s(%v)\n", k,v, jso.K(k...).v)
 			}
 		case "array":
 			if !jso.IsArray(k...) {
-				t.Fatal(jso.err)
-				t.Fatalf("key:%v value is not %s(%#v)\n", jso.v, v, jso.K(k...))
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
 			}
 		case "number":
 			if !jso.IsNumber(k...) {
-				t.Fatalf("key:%v value is not %s(%#v)\n", jso.v, v, jso.K(k...))
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
 			}
 		case "dict":
 			if !jso.IsDict(k...) {
-				t.Fatalf("key:%v value is not %s(%#v)\n", jso.v, v, jso.K(k...))
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
+			}
+		case "bool":
+			if !jso.IsBool(k...) {
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
 			}
 		}
 	}
