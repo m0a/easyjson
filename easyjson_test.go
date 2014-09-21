@@ -183,6 +183,27 @@ func TestUseAsFloat64(t *testing.T) {
 	}
 }
 
+func TestAsBool(t *testing.T) {
+
+	const jsonString string = `{
+	"key1":"value",
+	"key2":["a",2,3,4,false]
+	}`
+
+	jso := NewEasyJson(jsonString)
+	jso.Debug = true
+	v, err := jso.K("key2",4).AsBool()
+	if err != nil {
+		t.Fatalf("err:%s", err)
+	}
+
+	if v != false {
+		t.Fatalf("value is %b correct:false ", v)
+	}
+}
+
+
+
 func TestIsXXX(t *testing.T) {
 	const jsonString string = `{
 	"key1":"value",
@@ -191,7 +212,9 @@ func TestIsXXX(t *testing.T) {
 	"key4":true,
 	}`
 
-	jso := NewEasyJson(jsonString)
+	testobj := NewEasyJson(jsonString)
+	testobj.Debug = true
+
 
 	checkList := map[string]Keys{
 		"string": Keys{"key1"},
@@ -204,24 +227,24 @@ func TestIsXXX(t *testing.T) {
 	for v, k := range checkList {
 		switch v {
 		case "string":
-			if !jso.IsString(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
+			if !testobj.IsString(k...) {
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
 			}
 		case "array":
-			if !jso.IsArray(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
+			if !testobj.IsArray(k...) {
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
 			}
 		case "number":
-			if !jso.IsNumber(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
+			if !testobj.IsNumber(k...) {
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
 			}
 		case "dict":
-			if !jso.IsDict(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
+			if !testobj.IsDict(k...) {
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
 			}
 		case "bool":
-			if !jso.IsBool(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
+			if !testobj.IsBool(k...) {
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, testobj.K(k...).v)
 			}
 		}
 	}

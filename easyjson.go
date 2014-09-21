@@ -36,27 +36,27 @@ func NewEasyJson(i interface{}) easyJsonObj {
 // access function
 func (e easyJsonObj) K(keys ...interface{}) (ret easyJsonObj) {
 
-	errorlog := func(format string, a ...interface{}) {
+	errorLog := func(format string, a ...interface{}) {
 		e.err = fmt.Errorf(format, a...)
 	}
-	debuglog := func(format string, a ...interface{}) {
+	debugLog := func(format string, a ...interface{}) {
 		_ = format
 		_ = a
 	}
 	if e.Debug {
-		errorlog = func(format string, a ...interface{}) {
+		errorLog = func(format string, a ...interface{}) {
 			str := fmt.Sprintf(format, a...)
 			e.err = errors.New(str)
 			fmt.Print(str)
 			panic(str)
 		}
-		debuglog = func(format string, a ...interface{}) {
+		debugLog = func(format string, a ...interface{}) {
 			fmt.Printf(format, a...)
 		}
 	}
 
-	debuglog(">>start K(%v)\n", keys)
-	defer debuglog(">>end K(%v)\n", keys)
+	debugLog(">>start K(%v)\n", keys)
+	defer debugLog(">>end K(%v)\n", keys)
 
 	ret = e
 	for _, key := range keys {
@@ -65,31 +65,31 @@ func (e easyJsonObj) K(keys ...interface{}) (ret easyJsonObj) {
 			//array access
 			array, ok := ret.v.([]interface{})
 			if !ok {
-				//				ret.err=fmt.Errorf()
-				errorlog("Not array. please use string key.")
+				errorLog("Not array. please use string key.")
 				return
 			}
 
 			v := array[key.(int)]
 			if v == nil {
+				errorLog("array access value= nil key=%v array=%v\n", key, array)
 				return
 			}
 			ret.v = v
 		case string:
 			dict, ok := ret.v.(map[string]interface{})
 			if !ok {
-				errorlog("Not dictionary. please use int key.")
+				errorLog("Not dictionary. please use int key. currentJson:%v",ret)
 				return
 			}
 
 			v := dict[key.(string)]
 			if v == nil {
-				errorlog("dict access value= nil key=%v dict=%v\n", key, dict)
+				errorLog("dict access value= nil key=%v dict=%v\n", key, dict)
 				return
 			}
 			ret.v = v
 		default:
-			errorlog("key is only use string,int")
+			errorLog("key shoud use string or int current type:%T",key)
 			return
 		}
 	}
@@ -135,7 +135,24 @@ func (e easyJsonObj) AsString(k ...interface{}) (str string, err error) {
 		return
 	}
 
-	str = e.K(k...).v.(string)
+	str = ejo.v.(string)
+	return
+}
+
+
+func (e easyJsonObj) AsBool(k ...interface{}) (b bool, err error) {
+	ejo := e.K(k...)
+	if ejo.err != nil {
+		err = ejo.err
+		return
+	}
+
+	if !ejo.IsBool() {
+		err = fmt.Errorf("value is not a bool type = %#v", ejo.v)
+		return
+	}
+
+	b = ejo.v.(bool)
 	return
 }
 
