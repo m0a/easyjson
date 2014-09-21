@@ -85,24 +85,29 @@ func (e easyJsonObj) K(keys ...interface{}) (ret easyJsonObj) {
 			//array access
 			array, ok := ret.v.([]interface{})
 			if !ok {
-				errorLog("Not array. please use string key.")
-				return
+				errorLog("invalid key:%v Not array. please use string key.\n", key)
+				panic(e.err)
 			}
 
-			v := array[key.(int)]
+			v:= array[key.(int)]
 			if v == nil {
-				errorLog("array access value= nil key=%v array=%v\n", key, array)
-				return
+				errorLog("invalid key:%v value is nil.\n", key)
+				panic(e.err)
 			}
 			ret.v = v
 		case string:
 			dict, ok := ret.v.(map[string]interface{})
 			if !ok {
-				errorLog("Not dictionary. please use int key. currentJson:%v\n", ret)
-				return
+				errorLog("invalid key:%v Not dictionary. please use int key.\n", key)
+				panic(e.err)
 			}
 
-			v := dict[key.(string)]
+			v:= dict[key.(string)]
+			if v == nil {
+				errorLog("invalid key:%v value is nil.\n", key)
+				panic(e.err)
+			}
+
 			if v == nil {
 				errorLog("dict access value= nil key=%v dict=%v\n", key, dict)
 				return

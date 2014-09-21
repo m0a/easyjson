@@ -88,12 +88,9 @@ func TestPretyPrint2(t *testing.T) {
 func TestPretyPrint3(t *testing.T) {
 	jsonStr :=
 `{
-	"1":"a",
 	"b":{
-		"a":"1",
-		"b":"2"
-	},
-	"3":"c"
+		"a":"1"
+	}
 }`
 	obj, err := easyjson.NewEasyJson(jsonStr)
 	if err != nil {
