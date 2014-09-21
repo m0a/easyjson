@@ -30,7 +30,7 @@ type JsonAccessor interface {
 	IsString(...interface{}) bool
 
 	PretyString() string
-	PretyPrint()
+	PrettyPrint()
 
 	Walk(walker func(key interface{},value JsonAccessor))
 	RangeObjects()(ret map[interface {}]JsonAccessor)

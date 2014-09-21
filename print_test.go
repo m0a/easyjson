@@ -43,7 +43,7 @@ func TestPrintStringNil(t *testing.T) {
 	}
 }
 
-func TestPretyPrint1(t *testing.T) {
+func TestPrettyPrint1(t *testing.T) {
 	jsonStr :=
 `[
 	"1",
@@ -64,7 +64,7 @@ func TestPretyPrint1(t *testing.T) {
 
 }
 
-func TestPretyPrint2(t *testing.T) {
+func TestPrettyPrint2(t *testing.T) {
 	jsonStr :=
 `[
 	"1",
@@ -85,7 +85,7 @@ func TestPretyPrint2(t *testing.T) {
 
 }
 
-func TestPretyPrint3(t *testing.T) {
+func TestPrettyPrint3(t *testing.T) {
 	jsonStr :=
 `{
 	"b":{

@@ -38,10 +38,10 @@ func main() {
 	}
 
 	//easy access!
-	json.K("routes",0,"bounds","southwest").PretyPrint()
+	json.K("routes",0,"bounds","southwest").PrettyPrint()
 
 	//support method chain
-	json.K("routes").K(0).K("bounds").K("southwest").PretyPrint()
+	json.K("routes").K(0).K("bounds").K("southwest").PrettyPrint()
 
     //if use loop
 	for k,v:=range json.K("routes").K(0).RangeObjects() {
