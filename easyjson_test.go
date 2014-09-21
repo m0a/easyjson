@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-
 func TestNewEasyJson(t *testing.T) {
 
 	const jsonString string = `{
@@ -15,7 +14,7 @@ func TestNewEasyJson(t *testing.T) {
 	}`
 
 	testobj := NewEasyJson(jsonString)
-	testobj.Debug=true
+	testobj.Debug = true
 	if testobj.v == nil {
 		t.Fatal("NewEasyJson Error")
 	}
@@ -29,7 +28,7 @@ func TestK00(t *testing.T) {
 	}`
 
 	jso := NewEasyJson(jsonString)
-	jso.Debug=true
+	jso.Debug = true
 	if v, _ := jso.K("key2").K(1).AsInt(); v != 2 {
 		t.Fatal("convert int err")
 	}
@@ -192,23 +191,21 @@ func TestIsXXX(t *testing.T) {
 	"key4":true,
 	}`
 
-
 	jso := NewEasyJson(jsonString)
 
 	checkList := map[string]Keys{
-		"string"	: Keys{"key1"},
-		"dict"		: Keys{"key3"},
-		"array"		: Keys{"key3", "c"},
-		"number"	: Keys{"key3", "c", 3},
-		"bool"		: Keys{"key4"},
-
+		"string": Keys{"key1"},
+		"dict":   Keys{"key3"},
+		"array":  Keys{"key3", "c"},
+		"number": Keys{"key3", "c", 3},
+		"bool":   Keys{"key4"},
 	}
 
 	for v, k := range checkList {
 		switch v {
 		case "string":
 			if !jso.IsString(k...) {
-				t.Fatalf("key:%v value is not %s(%v)\n", k,v, jso.K(k...).v)
+				t.Fatalf("key:%v value is not %s(%v)\n", k, v, jso.K(k...).v)
 			}
 		case "array":
 			if !jso.IsArray(k...) {
