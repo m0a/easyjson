@@ -6,10 +6,28 @@ import (
 )
 
 func (e easyJsonObj) String() string {
-	return recursivePrint(e.v)
+	return recursivePrint(e.v,false,0)
 }
 
-func recursivePrint(i interface{}) string {
+func (e easyJsonObj) PretyString() string {
+	return recursivePrint(e.v,true,1)
+}
+func (e easyJsonObj) PretyPrint(){
+	fmt.Println(e.PretyString())
+}
+
+func recursivePrint(i interface{},pretyPrint bool,step int) string {
+
+	createPadding:=func(s int) string {
+		ret:=""
+		for i:=0; i< s; i++ {
+			ret+="\t"
+		}
+		return ret
+	}
+	padding:=createPadding(step)
+	old_padding:=createPadding(step-1)
+
 
 	switch i.(type) {
 	case bool:
@@ -24,26 +42,62 @@ func recursivePrint(i interface{}) string {
 		return fmt.Sprintf("\"%s\"", i.(string))
 	case float64:
 		return fmt.Sprintf("%f", i.(float64))
+
+	//list case
 	case []interface{}:
 		array := i.([]interface{})
 		str := "["
+		if pretyPrint {
+			str += "\n"
+			str += padding
+		}
+
 		list := make([]string, len(array))
 		for i, v := range array {
-			list[i] = recursivePrint(v)
+			list[i]=""
+			list[i] += recursivePrint(v,pretyPrint,step+1)
 		}
-		str += strings.Join(list, ",")
+		if pretyPrint {
+			str += strings.Join(list, ",\n"+padding)
+		} else {
+			str += strings.Join(list, ",")
+		}
+
+		if pretyPrint {
+			str+="\n"
+			str += old_padding
+		}
+
 		str += "]"
 		return str
+	//dicitionary case
 	case map[string]interface{}:
 		dict := i.(map[string]interface{})
 		str := "{"
+		if pretyPrint {
+			str += "\n"
+		}
+
 		list := make([]string, len(dict))
 		i := 0
 		for k, v := range dict {
-			list[i] = fmt.Sprintf("\"%s\":%s", k, recursivePrint(v))
+			list[i]=""
+			if pretyPrint {
+				list[i]+=padding
+			}
+			list[i] += fmt.Sprintf("\"%s\":%s", k, recursivePrint(v,pretyPrint,step+1))
 			i++
 		}
-		str += strings.Join(list, ",")
+		if pretyPrint {
+			str += strings.Join(list, ",\n")
+		} else {
+			str += strings.Join(list, ",")
+		}
+
+		if pretyPrint {
+			str+="\n"
+			str+=old_padding
+		}
 		str += "}"
 		return str
 	case nil:
