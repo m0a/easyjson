@@ -29,7 +29,7 @@ type JsonAccessor interface {
 	IsNumber(...interface{}) bool
 	IsString(...interface{}) bool
 
-	PretyString() string
+	PrettyString() string
 	PrettyPrint()
 
 	Walk(walker func(key interface{},value JsonAccessor))

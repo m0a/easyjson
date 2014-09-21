@@ -58,8 +58,8 @@ func TestPrettyPrint1(t *testing.T) {
 		t.Fatal("json convert err")
 	}
 
-	if obj.PretyString() != jsonStr {
-		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n",obj.PretyString(),jsonStr)
+	if obj.PrettyString() != jsonStr {
+		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n",obj.PrettyString(),jsonStr)
 	}
 
 }
@@ -79,8 +79,8 @@ func TestPrettyPrint2(t *testing.T) {
 		t.Fatal("json convert err")
 	}
 
-	if obj.PretyString() != jsonStr {
-		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n",obj.PretyString(),jsonStr)
+	if obj.PrettyString() != jsonStr {
+		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n",obj.PrettyString(),jsonStr)
 	}
 
 }
@@ -97,8 +97,8 @@ func TestPrettyPrint3(t *testing.T) {
 		t.Fatal("json convert err")
 	}
 
-	if obj.PretyString() != jsonStr {
-		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n",obj.PretyString(),jsonStr)
+	if obj.PrettyString() != jsonStr {
+		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n",obj.PrettyString(),jsonStr)
 	}
 
 }

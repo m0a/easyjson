@@ -9,11 +9,11 @@ func (e easyJsonObj) String() string {
 	return recursivePrint(e.v,false,0)
 }
 
-func (e easyJsonObj) PretyString() string {
+func (e easyJsonObj) PrettyString() string {
 	return recursivePrint(e.v,true,1)
 }
 func (e easyJsonObj) PrettyPrint(){
-	fmt.Println(e.PretyString())
+	fmt.Println(e.PrettyString())
 }
 
 func recursivePrint(i interface{},prettyPrint bool,step int) string {
