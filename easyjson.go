@@ -18,19 +18,22 @@ type easyJsonObj struct {
 
 type Keys []interface{}
 
-// startFunction
+// parameter i io.reader,string,GoObject(interface{}) support
 func NewEasyJson(i interface{}) (jo easyJsonObj, err error) {
 
 	if r, ok := i.(io.Reader); ok {
-		dec := json.NewDecoder(r)
-		dec.Decode(&jo.v)
+		return newEasyJson(r)
 	} else if str, ok := i.(string); ok {
-		dec := json.NewDecoder(strings.NewReader(str))
-		dec.Decode(&jo.v)
+		return newEasyJson(strings.NewReader(str))
 	} else {
 		jo.v = i.(easyJsonObj)
 	}
+	return
+}
 
+func newEasyJson(r io.Reader) (jo easyJsonObj, err error) {
+	dec := json.NewDecoder(r)
+	dec.Decode(&jo.v)
 	if jo.v == nil {
 		jo.err = fmt.Errorf("input error can't parse jsonData")
 		err = jo.err
