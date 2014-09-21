@@ -19,7 +19,7 @@ func TestPrintString1(t *testing.T) {
 }
 
 func TestPrintString2(t *testing.T) {
-	jsonStr := `{"a":"abc","b":[true,false,true,"a","b","c"]}`
+	jsonStr := `{"b":[true,false,true,"a","b","c"]}`
 	obj, err := easyjson.NewEasyJson(jsonStr)
 	if err != nil {
 		t.Fatal("json convert err")
