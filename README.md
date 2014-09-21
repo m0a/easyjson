@@ -43,10 +43,19 @@ func main() {
 	//support method chain
 	json.K("routes").K(0).K("bounds").K("southwest").PrettyPrint()
 
-    //if use loop
+    // if use loop
 	for k,v:=range json.K("routes").K(0).RangeObjects() {
 		fmt.Printf("%v:%v\n",k,v)
 	}
+
+	//string value
+	copyrights,err:=json.K("routes").K(0).K("copyrights").AsString()
+	if err!=nil {
+		panic("AsString err")
+	}
+
+
+	fmt.Printf("copyrights=%s",copyrights)
 
 
 }
