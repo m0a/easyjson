@@ -41,7 +41,9 @@ func main() {
 	if err != nil {
 		panic("AsString err")
 	}
-
 	fmt.Printf("copyrights=%s", copyrights)
+
+	//more easy use
+	fmt.Printf("copyrights=%s", json.AsStringPanic("routes", 0, "copyrights"))
 
 }
