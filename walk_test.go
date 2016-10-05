@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"./easyjson"
+	"github.com/m0a/easyjson"
 )
 
 func TestRangeObjects(t *testing.T) {
