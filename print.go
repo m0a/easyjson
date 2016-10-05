@@ -6,36 +6,34 @@ import (
 )
 
 func (e easyJsonObj) String() string {
-	return recursivePrint(e.v,false,0)
+	return recursivePrint(e.v, false, 0)
 }
 
 func (e easyJsonObj) PrettyString() string {
-	return recursivePrint(e.v,true,1)
+	return recursivePrint(e.v, true, 1)
 }
-func (e easyJsonObj) PrettyPrint(){
+func (e easyJsonObj) PrettyPrint() {
 	fmt.Println(e.PrettyString())
 }
 
-func recursivePrint(i interface{},prettyPrint bool,step int) string {
+func recursivePrint(i interface{}, prettyPrint bool, step int) string {
 
-	createPadding:=func(s int) string {
-		ret:=""
-		for i:=0; i< s; i++ {
-			ret+="\t"
+	createPadding := func(s int) string {
+		ret := ""
+		for i := 0; i < s; i++ {
+			ret += "\t"
 		}
 		return ret
 	}
-	padding:=createPadding(step)
-	old_padding:=createPadding(step-1)
-
+	padding := createPadding(step)
+	oldPadding := createPadding(step - 1)
 
 	switch i.(type) {
 	case bool:
 		if i.(bool) {
 			return "true"
-		} else {
-			return "false"
 		}
+		return "false"
 	case int:
 		return string(i.(int))
 	case string:
@@ -54,8 +52,8 @@ func recursivePrint(i interface{},prettyPrint bool,step int) string {
 
 		list := make([]string, len(array))
 		for i, v := range array {
-			list[i]=""
-			list[i] += recursivePrint(v,prettyPrint,step+1)
+			list[i] = ""
+			list[i] += recursivePrint(v, prettyPrint, step+1)
 		}
 		if prettyPrint {
 			str += strings.Join(list, ",\n"+padding)
@@ -64,8 +62,8 @@ func recursivePrint(i interface{},prettyPrint bool,step int) string {
 		}
 
 		if prettyPrint {
-			str+="\n"
-			str += old_padding
+			str += "\n"
+			str += oldPadding
 		}
 
 		str += "]"
@@ -81,11 +79,11 @@ func recursivePrint(i interface{},prettyPrint bool,step int) string {
 		list := make([]string, len(dict))
 		i := 0
 		for k, v := range dict {
-			list[i]=""
+			list[i] = ""
 			if prettyPrint {
-				list[i]+=padding
+				list[i] += padding
 			}
-			list[i] += fmt.Sprintf("\"%s\":%s", k, recursivePrint(v,prettyPrint,step+1))
+			list[i] += fmt.Sprintf("\"%s\":%s", k, recursivePrint(v, prettyPrint, step+1))
 			i++
 		}
 		if prettyPrint {
@@ -95,8 +93,8 @@ func recursivePrint(i interface{},prettyPrint bool,step int) string {
 		}
 
 		if prettyPrint {
-			str+="\n"
-			str+=old_padding
+			str += "\n"
+			str += oldPadding
 		}
 		str += "}"
 		return str

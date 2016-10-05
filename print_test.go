@@ -2,8 +2,9 @@ package easyjson_test
 
 import (
 	"fmt"
-	"github.com/m0a/easyjson"
 	"testing"
+
+	"./easyjson"
 )
 
 func TestPrintString1(t *testing.T) {
@@ -45,7 +46,7 @@ func TestPrintStringNil(t *testing.T) {
 
 func TestPrettyPrint1(t *testing.T) {
 	jsonStr :=
-`[
+		`[
 	"1",
 	"2",
 	"3",
@@ -59,14 +60,14 @@ func TestPrettyPrint1(t *testing.T) {
 	}
 
 	if obj.PrettyString() != jsonStr {
-		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n",obj.PrettyString(),jsonStr)
+		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n", obj.PrettyString(), jsonStr)
 	}
 
 }
 
 func TestPrettyPrint2(t *testing.T) {
 	jsonStr :=
-`[
+		`[
 	"1",
 	[
 		"a",
@@ -80,14 +81,14 @@ func TestPrettyPrint2(t *testing.T) {
 	}
 
 	if obj.PrettyString() != jsonStr {
-		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n",obj.PrettyString(),jsonStr)
+		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n", obj.PrettyString(), jsonStr)
 	}
 
 }
 
 func TestPrettyPrint3(t *testing.T) {
 	jsonStr :=
-`{
+		`{
 	"b":{
 		"a":"1"
 	}
@@ -98,7 +99,7 @@ func TestPrettyPrint3(t *testing.T) {
 	}
 
 	if obj.PrettyString() != jsonStr {
-		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n",obj.PrettyString(),jsonStr)
+		t.Fatalf("don't match \ncurrent: \n%s \ncorrct:\n%s\n", obj.PrettyString(), jsonStr)
 	}
 
 }

@@ -23,6 +23,11 @@ type JsonAccessor interface {
 	AsString(...interface{}) (str string, err error)
 	AsBool(...interface{}) (b bool, err error)
 
+	AsIntPanic(...interface{}) int
+	AsFloat64Panic(...interface{}) float64
+	AsStringPanic(...interface{}) string
+	AsBoolPanic(...interface{}) bool
+
 	IsDict(...interface{}) bool
 	IsArray(...interface{}) bool
 	IsBool(...interface{}) bool
@@ -32,10 +37,9 @@ type JsonAccessor interface {
 	PrettyString() string
 	PrettyPrint()
 
-	Walk(walker func(key interface{},value JsonAccessor))
-	RangeObjects()(ret map[interface {}]JsonAccessor)
+	Walk(walker func(key interface{}, value JsonAccessor))
+	RangeObjects() (ret map[interface{}]JsonAccessor)
 }
-
 
 type Keys []interface{}
 
@@ -63,7 +67,7 @@ func newEasyJson(r io.Reader) (jo easyJsonObj, err error) {
 }
 
 // parameter keys can use string or int
-func (e easyJsonObj) K(keys ...interface{}) (JsonAccessor) {
+func (e easyJsonObj) K(keys ...interface{}) JsonAccessor {
 
 	errorLog := func(format string, a ...interface{}) {
 		e.err = fmt.Errorf(format, a...)
@@ -88,7 +92,7 @@ func (e easyJsonObj) K(keys ...interface{}) (JsonAccessor) {
 	}
 	debugLog(">>start K(%v)\n", keys)
 
-	if e.v == nil && len(keys)!=0 {
+	if e.v == nil && len(keys) != 0 {
 		errorLog("already value is null\n")
 		panic(e.err)
 	}
@@ -96,7 +100,7 @@ func (e easyJsonObj) K(keys ...interface{}) (JsonAccessor) {
 	debugLog(">>current obj=%v\n", e)
 	defer debugLog(">>end K(%v)\n", keys)
 
-	retEjo:= e
+	retEjo := e
 	for _, key := range keys {
 		debugLog("-->key=<<%s>>\n", key)
 		debugLog("-->ret=<<%s>>\n", retEjo)
@@ -110,7 +114,7 @@ func (e easyJsonObj) K(keys ...interface{}) (JsonAccessor) {
 				panic(e.err)
 			}
 
-			v:= array[key.(int)]
+			v := array[key.(int)]
 			if v == nil {
 				errorLog("invalid key:%v value is nil.\n", key)
 				panic(e.err)
@@ -124,7 +128,7 @@ func (e easyJsonObj) K(keys ...interface{}) (JsonAccessor) {
 				panic(e.err)
 			}
 
-			v:= dict[key.(string)]
+			v := dict[key.(string)]
 			if v == nil {
 				errorLog("invalid key:%v value is nil.\n", key)
 				panic(e.err)
@@ -149,11 +153,16 @@ func panicf(format string, a ...interface{}) {
 	panic(str)
 }
 
-//値の取得
 func (e easyJsonObj) AsInt(k ...interface{}) (i int, err error) {
 	v, err := e.AsFloat64(k...)
 	i = int(v)
 	return
+}
+
+func (e easyJsonObj) AsIntPanic(k ...interface{}) int {
+	v := e.AsFloat64Panic(k...)
+	i := int(v)
+	return i
 }
 
 func (e easyJsonObj) AsFloat64(k ...interface{}) (v float64, err error) {
@@ -169,6 +178,14 @@ func (e easyJsonObj) AsFloat64(k ...interface{}) (v float64, err error) {
 	}
 	v = ejo.v.(float64)
 	return
+}
+
+func (e easyJsonObj) AsFloat64Panic(k ...interface{}) float64 {
+	v, err := e.AsFloat64(k...)
+	if err != nil {
+		panic(err)
+	}
+	return v
 }
 
 func (e easyJsonObj) AsString(k ...interface{}) (str string, err error) {
@@ -187,6 +204,14 @@ func (e easyJsonObj) AsString(k ...interface{}) (str string, err error) {
 	return
 }
 
+func (e easyJsonObj) AsStringPanic(k ...interface{}) string {
+	s, err := e.AsString(k...)
+	if err != nil {
+		panic(err)
+	}
+	return s
+}
+
 func (e easyJsonObj) AsBool(k ...interface{}) (b bool, err error) {
 	ejo := e.K(k...).(easyJsonObj)
 	if ejo.err != nil {
@@ -201,6 +226,15 @@ func (e easyJsonObj) AsBool(k ...interface{}) (b bool, err error) {
 
 	b = ejo.v.(bool)
 	return
+}
+
+func (e easyJsonObj) AsBoolPanic(k ...interface{}) bool {
+	b, err := e.AsBool(k...)
+	if err != nil {
+		panic(err)
+	}
+	return b
+
 }
 
 // Value check

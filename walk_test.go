@@ -1,15 +1,15 @@
 package easyjson_test
 
 import (
-	"testing"
-	"github.com/m0a/easyjson"
 	"fmt"
-)
+	"testing"
 
+	"./easyjson"
+)
 
 func TestRangeObjects(t *testing.T) {
 	jsonStr :=
-	`[
+		`[
 		"0",
 		"1",
 		"2",
@@ -23,25 +23,24 @@ func TestRangeObjects(t *testing.T) {
 		t.Fatal("json convert err")
 	}
 
-	for k,v:= range obj.RangeObjects() {
-		switch s:=k.(int); s {
+	for k, v := range obj.RangeObjects() {
+		switch s := k.(int); s {
 		case 0:
-			if str,_:=v.AsString(); str != "0" {
-				t.Fatalf("not \"0\" i=%s\n",str)
+			if str, _ := v.AsString(); str != "0" {
+				t.Fatalf("not \"0\" i=%s\n", str)
 			}
 		case 5:
-			if str,_:=v.AsString(); str != "5" {
-				t.Fatalf("not \"5\" i=%s\n",str)
+			if str, _ := v.AsString(); str != "5" {
+				t.Fatalf("not \"5\" i=%s\n", str)
 			}
 
 		}
 	}
 }
 
-
 func TestListWalk(t *testing.T) {
 	jsonStr :=
-	`[
+		`[
 		"0",
 		"1",
 		"2",
@@ -55,10 +54,10 @@ func TestListWalk(t *testing.T) {
 		t.Fatal("json convert err")
 	}
 
-	obj.Walk(func(key interface{},value easyjson.JsonAccessor){
-		fmt.Printf("%v:%v\n",key,value)
-		str,_:=value.AsString()
-		if key == 0 && str!="0" {
+	obj.Walk(func(key interface{}, value easyjson.JsonAccessor) {
+		fmt.Printf("%v:%v\n", key, value)
+		str, _ := value.AsString()
+		if key == 0 && str != "0" {
 			t.Fatal("key 0 value !=0")
 		}
 	})
@@ -66,7 +65,7 @@ func TestListWalk(t *testing.T) {
 
 func TestDictionaryWalk(t *testing.T) {
 	jsonStr :=
-	`{
+		`{
 		"0":"a",
 		"1":"b",
 		"2":"c",
@@ -80,12 +79,11 @@ func TestDictionaryWalk(t *testing.T) {
 		t.Fatal("json convert err")
 	}
 
-	obj.Walk(func(key interface{},value easyjson.JsonAccessor){
-		fmt.Printf("%v:%v\n",key,value)
-		str,_:=value.AsString()
-		if key == "0" && str!="a" {
+	obj.Walk(func(key interface{}, value easyjson.JsonAccessor) {
+		fmt.Printf("%v:%v\n", key, value)
+		str, _ := value.AsString()
+		if key == "0" && str != "a" {
 			t.Fatal("key \"0\" value !=\"a\"")
 		}
 	})
 }
-

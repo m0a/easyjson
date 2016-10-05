@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/m0a/easyjson"
-	"net/http"
 	"fmt"
-)
+	"net/http"
 
+	"github.com/m0a/easyjson"
+)
 
 func main() {
 
@@ -20,30 +20,28 @@ func main() {
 		panic(resp.StatusCode)
 	}
 
-	json,err := easyjson.NewEasyJson(resp.Body)
-	if err!=nil {
+	json, err := easyjson.NewEasyJson(resp.Body)
+	if err != nil {
 		panic("json convert err")
 	}
 
 	//easy access!
-	json.K("routes",0,"bounds","southwest").PrettyPrint()
+	json.K("routes", 0, "bounds", "southwest").PrettyPrint()
 
 	//support method chain
 	json.K("routes").K(0).K("bounds").K("southwest").PrettyPrint()
 
 	// if use loop
-	for k,v:=range json.K("routes").K(0).RangeObjects() {
-		fmt.Printf("%v:%v\n",k,v)
+	for k, v := range json.K("routes").K(0).RangeObjects() {
+		fmt.Printf("%v:%v\n", k, v)
 	}
 
 	//string value
-	copyrights,err:=json.K("routes").K(0).K("copyrights").AsString()
-	if err!=nil {
+	copyrights, err := json.K("routes").K(0).K("copyrights").AsString()
+	if err != nil {
 		panic("AsString err")
 	}
 
-
-	fmt.Printf("copyrights=%s",copyrights)
-
+	fmt.Printf("copyrights=%s", copyrights)
 
 }
